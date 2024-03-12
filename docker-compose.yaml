@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./auth-service
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8081:8081"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+
+  # Restaurant Info Service
+  restaurant-info-service:
+    build:
+      context: ./restaurant-info-service
+    ports:
+      - "8082:8082"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+
+  # Order Service
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "8083:8083"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+      - restaurant-info-service
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./booking-service
+    ports:
+      - "8084:8084"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+      - restaurant-info-service
+      - order-service
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./payment-service
+    ports:
+      - "8085:8085"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+
+networks:
+  my-network:
+    driver: bridge

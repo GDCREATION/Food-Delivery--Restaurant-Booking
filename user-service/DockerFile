@@ -1,0 +1,25 @@
+# Use a minimal base image with OpenJDK 17
+FROM openjdk:17-jre-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Maven executable to the container
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the project files
+COPY pom.xml .
+COPY src src
+
+# Build the application
+RUN ./mvnw clean install -DskipTests
+
+# Remove the Maven wrapper and source code
+RUN rm -rf .mvn mvnw src
+
+# Expose the port that the application will run on
+EXPOSE 8082
+
+# Command to run the application
+CMD ["java", "-jar", "target/user-service.jar"]

@@ -2,6 +2,15 @@ version: '3'
 
 services:
 
+  # Config Server
+  config-server:
+    build:
+      context: ./config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - my-network
+
   # Auth Service
   auth-service:
     build:
@@ -10,6 +19,8 @@ services:
       - "8080:8080"
     networks:
       - my-network
+    depends_on:
+      - config-server
 
   # User Service
   user-service:
@@ -68,6 +79,18 @@ services:
       - my-network
     depends_on:
       - auth-service
+
+  # API Gateway (Spring Cloud Gateway)
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8086:8086"
+    networks:
+      - my-network
+    depends_on:
+      - auth-service
+      - config-server
 
 networks:
   my-network:
